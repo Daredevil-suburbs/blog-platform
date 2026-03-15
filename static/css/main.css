@@ -1,0 +1,51 @@
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+}
+
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important;
+}
+
+.post-body img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.post-body p {
+    margin-bottom: 1.2rem;
+}
+
+.post-body h2, .post-body h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+a {
+    transition: color 0.2s ease;
+}
+
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Summernote override */
+.note-editor {
+    border-radius: 8px !important;
+}

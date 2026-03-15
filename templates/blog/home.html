@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Home - BlogPlatform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Posts Feed -->
+    <div class="col-lg-8">
+        <!-- Search Bar -->
+        <form method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control form-control-lg"
+                       placeholder="Search posts..." value="{{ query|default:'' }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+
+        {% if query %}
+            <p class="text-muted mb-3">Results for: <strong>"{{ query }}"</strong></p>
+        {% endif %}
+
+        {% for post in posts %}
+        <div class="card mb-4 shadow-sm border-0">
+            {% if post.cover_image %}
+            <img src="{{ post.cover_image.url }}" class="card-img-top" alt="{{ post.title }}"
+                 style="height: 220px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                {% if post.category %}
+                <span class="badge bg-primary mb-2">{{ post.category.name }}</span>
+                {% endif %}
+                <h4 class="card-title">
+                    <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">
+                        {{ post.title }}
+                    </a>
+                </h4>
+                <p class="card-text text-muted">{{ post.excerpt }}</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{% url 'users:public_profile' post.author.username %}"
+                           class="text-decoration-none text-muted small">
+                            <i class="fas fa-user-circle me-1"></i>{{ post.author.username }}
+                        </a>
+                        <span class="text-muted small">
+                            <i class="fas fa-calendar me-1"></i>{{ post.created_at|date:"M d, Y" }}
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 text-muted small">
+                        <span><i class="fas fa-heart me-1 text-danger"></i>{{ post.likes.count }}</span>
+                        <span><i class="fas fa-comment me-1"></i>{{ post.comments.count }}</span>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                            Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
+            <h5 class="text-muted">No posts found.</h5>
+            {% if user.is_authenticated %}
+            <a href="{% url 'blog:post_create' %}" class="btn btn-primary mt-2">Write the first post</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if posts.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if posts.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        &laquo; Prev
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in posts.paginator.page_range %}
+                <li class="page-item {% if posts.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if posts.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        Next &raquo;
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">
+                    <i class="fas fa-folder me-2 text-primary"></i>Categories
+                </h5>
+                <ul class="list-unstyled">
+                    {% for cat in categories %}
+                    <li class="mb-2">
+                        <a href="?category={{ cat.slug }}" class="text-decoration-none text-dark d-flex justify-content-between">
+                            <span>{{ cat.name }}</span>
+                            <span class="badge bg-light text-dark">{{ cat.posts.count }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-pen-nib fa-2x mb-3"></i>
+                <h5>Share Your Story</h5>
+                <p class="small opacity-75">Write a post and share your knowledge with the world.</p>
+                <a href="{% url 'blog:post_create' %}" class="btn btn-light btn-sm fw-bold">
+                    Write a Post
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}{{ author.username }} - BlogPlatform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm text-center p-4">
+            <img src="{{ author.profile.get_avatar_url }}" class="rounded-circle mx-auto mb-3"
+                 width="100" height="100" alt="{{ author.username }}">
+            <h5 class="fw-bold">{{ author.get_full_name|default:author.username }}</h5>
+            <p class="text-muted small">@{{ author.username }}</p>
+            {% if author.profile.bio %}
+            <p class="text-muted small">{{ author.profile.bio }}</p>
+            {% endif %}
+            <div class="d-flex justify-content-center gap-3 mt-2">
+                {% if author.profile.twitter %}
+                <a href="https://twitter.com/{{ author.profile.twitter }}" class="text-muted" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                {% endif %}
+                {% if author.profile.github %}
+                <a href="https://github.com/{{ author.profile.github }}" class="text-muted" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-9">
+        <h4 class="fw-bold mb-4">Posts by {{ author.username }}</h4>
+        {% for post in posts %}
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">{{ post.title }}</a>
+                </h5>
+                <p class="text-muted small">{{ post.excerpt }}</p>
+                <small class="text-muted">{{ post.created_at|date:"M d, Y" }}</small>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">This author hasn't published any posts yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
