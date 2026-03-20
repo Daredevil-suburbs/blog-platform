@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: blogdb
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: 54321
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
